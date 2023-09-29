@@ -12,6 +12,7 @@ export class PostDatabase extends BaseDatabase {
                 "posts.content",
                 "posts.likes",
                 "posts.dislikes",
+                "posts.comments",
                 "posts.created_at",
                 "posts.updated_at",
                 "users.id as creatorId",
@@ -22,13 +23,13 @@ export class PostDatabase extends BaseDatabase {
         return postsDB
     }
 
-    public async findPostById(id: string): Promise<PostDB | undefined> {
+    public async findPostById(id: string): Promise<PostDB> {
         const [postDB] = await BaseDatabase
             .connection(PostDatabase.TABLE_POSTS)
             .select()
             .where({id})
         
-        return postDB as PostDB | undefined
+        return postDB as PostDB 
     } 
 
     public async insertPost(newPostDB: PostDB): Promise<void>{
@@ -75,6 +76,18 @@ export class PostDatabase extends BaseDatabase {
                 .decrement('dislikes')
         }
     
+        public incrementComments = async (id: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .where({ id })
+                .increment('comments')
+        }
+    
+        public decrementComments = async (id: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .where({ id })
+                .decrement('comments')
+        }
+
         public reverseLikeUp = async (postId: string): Promise<void> => {
             await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
                 .increment('likes')

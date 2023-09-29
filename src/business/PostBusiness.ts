@@ -1,6 +1,5 @@
 import { LikeDislikeDatabase } from "../database/LikeDislikeDatabase"
 import { PostDatabase } from "../database/PostDatabase"
-import { UserDatabase } from "../database/UserDatabase"
 import { CreatePostInputDTO, CreatePostOutputDTO } from "../dtos/post/createPost.dto"
 import { DeletePostInputDTO } from "../dtos/post/deletePost.dto"
 import { EditPostInputDTO, EditPostOutputDTO } from "../dtos/post/editPost.dto"
@@ -26,7 +25,7 @@ export class PostBusiness {
 
     public createPost = async (input: CreatePostInputDTO): Promise<CreatePostOutputDTO> => {
         const { token, content } = input
-
+        //Token do usuario
         const payload = this.tokenManager.getPayload(token)
 
         if (payload === null) {
@@ -39,6 +38,7 @@ export class PostBusiness {
             id,
             payload.id,
             content,
+            0,
             0,
             0,
             new Date().toISOString(),
@@ -73,6 +73,7 @@ export class PostBusiness {
                 postDB.content,
                 postDB.likes,
                 postDB.dislikes,
+                postDB.comments,
                 postDB.created_at,
                 postDB.updated_at
             )
@@ -109,6 +110,7 @@ export class PostBusiness {
             postDB.content,
             postDB.likes,
             postDB.dislikes,
+            postDB.comments,
             postDB.created_at,
             postDB.updated_at
         )

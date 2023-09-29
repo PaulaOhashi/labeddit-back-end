@@ -14,6 +14,7 @@ CREATE TABLE posts(
     content TEXT NOT NULL,
     likes INTEGER NOT NULL,
     dislikes INTEGER NOT NULL,
+    comments INTEGER NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     Foreign Key (creator_id) REFERENCES users(id)
@@ -31,13 +32,14 @@ CREATE TABLE posts_likes_dislikes(
 CREATE TABLE comments(
     id TEXT PRIMARY KEY NOT NULL UNIQUE,
     post_id TEXT NOT NULL,
-    --creator_id TEXT NOT NULL,
+    creator_id TEXT NOT NULL,
     content TEXT NOT NULL,
     likes INTEGER NOT NULL,
     dislikes INTEGER NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     Foreign Key (post_id) REFERENCES posts(id)
+    Foreign Key (creator_id) REFERENCES users(id)
 );
 
 CREATE TABLE comments_likes_dislikes(
@@ -51,3 +53,9 @@ CREATE TABLE comments_likes_dislikes(
 DROP TABLE comments;
 
 DROP TABLE comments_likes_dislikes;
+
+DROP TABLE posts;
+
+DROP TABLE users;
+
+DROP TABLE posts_likes_dislikes;
