@@ -86,6 +86,7 @@ export class UserBusiness {
         const token = this.tokenManager.createToken(payload)
 
         const output: SignupOutputDTO = {
+            message:"Cadastro realizado com sucesso",
             token: token
         }
 
@@ -126,7 +127,8 @@ export class UserBusiness {
         const token = this.tokenManager.createToken(payload)
 
         const output: LoginOutputDTO = {
-            token
+            message: "Login realizado com sucesso",
+            token: token
         }
 
         return output
