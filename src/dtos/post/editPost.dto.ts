@@ -8,6 +8,7 @@ export interface EditPostInputDTO {
 }
 
 export interface EditPostOutputDTO {
+    message:string,
     content:string
 }
 

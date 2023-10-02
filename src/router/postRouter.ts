@@ -14,7 +14,6 @@ const postController = new PostController(
         new PostDatabase(),
         new IdGenerator(),
         new TokenManager(),
-        new HashManager(),
         new LikeDislikeDatabase()
     )
 )

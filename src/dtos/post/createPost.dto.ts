@@ -6,6 +6,7 @@ export interface CreatePostInputDTO {
 }
 
 export interface CreatePostOutputDTO {
+    message:string
     content:string
 }
 
