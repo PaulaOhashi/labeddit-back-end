@@ -1,7 +1,7 @@
 import { USER_ROLES, UserDB } from "../../../src/models/User";
 import { BaseDatabase } from "../../../src/database/BaseDatabase"; 
 
-const usersMock: UserDB[] = [
+export const usersMock: UserDB[] = [
     {
         id:"id-mock-fulano",
         name:"Fulano",

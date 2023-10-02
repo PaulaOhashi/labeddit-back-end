@@ -1,15 +1,14 @@
 import { LikeDislikeDatabase } from "../database/LikeDislikeDatabase"
 import { PostDatabase } from "../database/PostDatabase"
 import { CreatePostInputDTO, CreatePostOutputDTO } from "../dtos/post/createPost.dto"
-import { DeletePostInputDTO } from "../dtos/post/deletePost.dto"
+import { DeletePostInputDTO, DeletePostOutputDTO } from "../dtos/post/deletePost.dto"
 import { EditPostInputDTO, EditPostOutputDTO } from "../dtos/post/editPost.dto"
 import { GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/post/getPost.dto"
-import { LikeDislikePostInputDTO } from "../dtos/post/likeOrDislikePost.dto"
+import { LikeDislikePostInputDTO, LikeDislikePostOutputDTO } from "../dtos/post/likeOrDislikePost.dto"
 import { BadRequestError } from "../errors/BadRequestError"
 import { NotFoundError } from "../errors/NotFoundError"
 import { LikeDislikeDB, Post, PostDB } from "../models/Post"
 import { USER_ROLES } from "../models/User"
-import { HashManager } from "../services/HashManager"
 import { IdGenerator } from "../services/IdGenerator"
 import { TokenManager } from "../services/TokenManager"
 
@@ -18,8 +17,7 @@ export class PostBusiness {
     constructor(
         private postDatabase: PostDatabase,
         private idGenerator: IdGenerator,
-        private tokenManager: TokenManager,
-        private hashManager: HashManager,
+        private tokenManager: TokenManager,       
         private likeDislikeDatabase: LikeDislikeDatabase
     ) { }
 
@@ -49,6 +47,7 @@ export class PostBusiness {
         await this.postDatabase.insertPost(newPostDB)
 
         const output: CreatePostOutputDTO = {
+            message:"post created",
             content: content
         }
 
@@ -101,7 +100,7 @@ export class PostBusiness {
         }
 
         if (payload.id !== postDB.creator_id) {
-            throw new BadRequestError("Somente quem criou o post pode editá-la")
+            throw new BadRequestError("Somente quem criou o post pode editá-lo")
         }
 
         const post = new Post(
@@ -121,13 +120,14 @@ export class PostBusiness {
         await this.postDatabase.updatedPost(updatedPostDB)
 
         const output: EditPostOutputDTO = {
+            message:"Editado",
             content: content
         }
 
         return output
     }
 
-    public deletePost = async (input: DeletePostInputDTO): Promise<void> => {
+    public deletePost = async (input: DeletePostInputDTO): Promise<DeletePostOutputDTO> => {
         const { token, id } = input
 
         const payload = this.tokenManager.getPayload(token)
@@ -144,11 +144,16 @@ export class PostBusiness {
 
         if (payload.role !== USER_ROLES.ADMIN) {
             if (payload.id !== postDB.creator_id) {
-                throw new BadRequestError("Somente quem criou o post pode editá-la")
+                throw new BadRequestError("Não autorizado!")
             }
-        }
+        } 
 
         await this.postDatabase.deletePostById(id)
+
+        const output: DeletePostOutputDTO = {
+            message: "Post deletado"
+        }
+        return output
 
     }
 
@@ -202,6 +207,7 @@ export class PostBusiness {
             }
         }
 
-
+        const output: LikeDislikePostOutputDTO = "ok"
+        return output
     }
 }

@@ -27,10 +27,10 @@ export class CommentBusiness {
         const { token, content, post_id } = input
 
         const payload: TokenPayload | null = this.tokenManager.getPayload(token)
-        if (payload === null) throw new BadRequestError("invalid token");
+        if (payload === null) throw new BadRequestError("Token Inválido");
 
         const postDB: PostDB | undefined = await this.postDatabase.findPostById(post_id)
-        if (!postDB) throw new NotFoundError("post not found");
+        if (!postDB) throw new NotFoundError("Post não encontrado");
 
         const id = this.idGenerator.generate()
         
@@ -50,7 +50,7 @@ export class CommentBusiness {
         await  this.postDatabase.incrementComments(newComment.getPostId())
 
         const output: CreateCommentOutputDTO = {
-            message: "comment created"
+            message: "Comentário criado"
         }
         return output
     }
@@ -60,19 +60,19 @@ export class CommentBusiness {
 
         //verificar se o token é válido
         const payload: TokenPayload | null = this.tokenManager.getPayload(token)
-        if (payload === null) throw new BadRequestError("invalid token");
+        if (payload === null) throw new BadRequestError("Token inválido");
         
         //verificar se o comentário existe no DB pelo ID
         const commentDB: CommentModelDB | undefined = await this.commentDatabase.findCommentById(commentId)
-        if(!commentDB) throw new NotFoundError("Id Comment not found");
+        if(!commentDB) throw new NotFoundError("Id do comentário não encontrado");
         
         //verificar se o token é do criador do comentário
-        if (payload.id !== commentDB.creator_id) throw new BadRequestError("only the creator can edit the comment");
+        if (payload.id !== commentDB.creator_id) throw new BadRequestError("Só quem criou pode editar o comentário");
                         
         await this.commentDatabase.updateComment(content, commentId)
         
         const output: EditCommentOutputDTO = {
-            message: "updated comment"
+            message: "Comentário editado"
         }
         return output
     }
@@ -82,21 +82,21 @@ export class CommentBusiness {
 
         //verificando se o token é válido
         const payload: TokenPayload | null = this.tokenManager.getPayload(token)
-        if (payload === null) throw new BadRequestError("invalid token");
+        if (payload === null) throw new BadRequestError("Token inválido");
         
         //verificando se o commentId existe no DB
         const commentDB: CommentModelDB | undefined = await this.commentDatabase.findCommentById(commentId)
-        if (!commentDB) throw new NotFoundError("Id comment not found");
+        if (!commentDB) throw new NotFoundError("Id do comentário não encontrado");
 
         //verificando se o token é de ADMIN ou creator
-        if (payload.id !== commentDB.creator_id && payload.role !== USER_ROLES.ADMIN) throw new BadRequestError("you aren't authorized for this action");
+        if (payload.id !== commentDB.creator_id && payload.role !== USER_ROLES.ADMIN) throw new BadRequestError("Você não possui autorização para esta ação");
         //deletando o comentário no DB
         await this.commentDatabase.deleteCommentById(commentId)
         //decrementando a coluna comments da tabela posts
         await this.postDatabase.decrementComments(commentDB.post_id)
 
         const output: DeleteCommentOutputDTO = {
-            message: "comment deleted"
+            message: "Comentário deletado"
         }
         return output
     }
@@ -106,10 +106,10 @@ export class CommentBusiness {
 
         //verificando se o token é válido
         const payload: TokenPayload | null = this.tokenManager.getPayload(token)
-        if (payload === null) throw new BadRequestError("invalid token");
+        if (payload === null) throw new BadRequestError("Token inválido");
         //verificando se o postId existe no DB
         const postDB: PostDB = await this.postDatabase.findPostById(postId)
-        if (!postDB) throw new NotFoundError("postId not found");
+        if (!postDB) throw new NotFoundError("Id do post não encontrado");
         
         const commentsDB: CommentModel[] = await this.commentDatabase.getCommentsByPostId(postId)
         

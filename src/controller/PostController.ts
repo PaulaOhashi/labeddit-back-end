@@ -5,8 +5,9 @@ import { CreatePostSchema } from "../dtos/post/createPost.dto"
 import { ZodError } from "zod"
 import { GetPostSchema } from "../dtos/post/getPost.dto"
 import { EditPostSchema } from "../dtos/post/editPost.dto"
-import { DeletePostSchema } from "../dtos/post/deletePost.dto"
+import { DeletePostOutputDTO, DeletePostSchema } from "../dtos/post/deletePost.dto"
 import { LikeDislikePostSchema } from "../dtos/post/likeOrDislikePost.dto"
+import { DeleteCommentOutputDTO } from "../dtos/comment/deleteComment.dto"
 
 export class PostController {
     constructor(
@@ -89,7 +90,7 @@ export class PostController {
                 id: req.params.id
             })
 
-            const output = await this.postBusiness.deletePost(input)
+            const output: DeletePostOutputDTO = await this.postBusiness.deletePost(input)
 
             res.status(200).send(output)
 
